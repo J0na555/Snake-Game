@@ -1,2 +1,3 @@
 # Snake-Game
-a good old snake game 
+A good old Snake Game
+Made with java
