@@ -1,11 +1,14 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;//store the segments of the snake body
-import java.util.Random; // getting random x and y values to place our food 
+import java.util.ArrayList;
+//store the segments of the snake body
+import java.util.Random;
+ // getting random x and y values to place our food 
 import javax.swing.*;
 
     public class Snake extends JPanel implements ActionListener , KeyListener{
-        private class Tile{  // a clas to control the tile size on the window
+        private class Tile{  
+            // a class to control the tile size on the window
             int x;
             int y;
 
@@ -66,29 +69,41 @@ import javax.swing.*;
             super.paintComponent(g);
             draw(g);
         }
+
         public void draw(Graphics g) {
-            // Drawing grid to make it visible enough to show the tile size
-            for (int i = 0; i < boardWidth / tileSize; i++) { // 600/25 = 24 rows and 24 columns of squares
-                g.drawLine(i * tileSize, 0, i * tileSize, boardheight); // Vertical lines
-                g.drawLine(0, i * tileSize, boardWidth, i * tileSize); // Horizontal lines
-            }
-        
+
             // Food
             g.setColor(Color.red);
-            g.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
+            g.fill3DRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize,true);
         
             // Snake head
             g.setColor(Color.green);
-            g.fillRect(snakeHead.x * tileSize, snakeHead.y * tileSize, tileSize, tileSize); // To move the snake head to the desired pixels
+            g.fill3DRect(snakeHead.x * tileSize, snakeHead.y * tileSize, tileSize, tileSize,true); 
+            // To move the snake head to the desired pixels
         
             // Snake body
             for (Tile snakePart : snakeBody) {
-                g.fillRect(snakePart.x * tileSize, snakePart.y * tileSize, tileSize, tileSize);
+                g.fill3DRect(snakePart.x * tileSize, snakePart.y * tileSize, tileSize, tileSize,true);
             }
+
+            //score
+            g.setFont(new Font("Arial",Font.PLAIN, 16));
+            if(gameOver){
+                //show the game over  and the score when the game is over
+                g.setColor(Color.red);
+                g.drawString("Game Over: " + String.valueOf(snakeBody.size()), tileSize - 16 ,  tileSize);
+            }
+            else{
+                //show score on the time that the game is not over
+                g.drawString("Score: " + String.valueOf(snakeBody.size()), tileSize - 16, tileSize);
+            }
+
         }
         public void placefood(){
-            food.x = random.nextInt(boardWidth/tileSize);// 600/25 = 24 that means the x position is gonna be a random num b/n 1 and 24
-            food.y = random.nextInt(boardheight/tileSize); // same for y too
+            food.x = random.nextInt(boardWidth/tileSize);
+            // 600/25 = 24 that means the x position is gonna be a random num b/n 1 and 24
+            food.y = random.nextInt(boardheight/tileSize); 
+            // same for y too
         }
 
         public boolean collision(Tile tile1 ,Tile tile2){
@@ -111,7 +126,8 @@ import javax.swing.*;
             // Check for eating the food
             if (collision(snakeHead, food)) {
                 // Add a new tile at the position of the previous tail
-                Tile tail = snakeBody.isEmpty() ? new Tile(snakeHead.x - velocityX, snakeHead.y - velocityY) : snakeBody.get(snakeBody.size() - 1);
+                Tile tail = snakeBody.isEmpty() ? new Tile(snakeHead.x - velocityX, snakeHead.y - velocityY) : 
+                                                            snakeBody.get(snakeBody.size() - 1);
                 snakeBody.add(new Tile(tail.x, tail.y));
                 placefood();
             }
@@ -124,7 +140,8 @@ import javax.swing.*;
                 }
 
                 // Check for collision with the walls
-                if (snakeHead.x < 0 || snakeHead.x >= boardWidth / tileSize || snakeHead.y < 0 || snakeHead.y >= boardheight / tileSize) {
+                if (snakeHead.x < 0 || snakeHead.x >= boardWidth / tileSize || 
+                    snakeHead.y < 0 || snakeHead.y >= boardheight / tileSize) {
                     gameOver = true;
                 }
         }
@@ -140,9 +157,12 @@ import javax.swing.*;
 
         @Override
         public void keyPressed(KeyEvent e) {
-           if (e.getKeyCode()==KeyEvent.VK_UP && velocityY != 1){ // to make sure its not going backwards cuz if it did
-            velocityX = 0;                                        // it will be going back to his tail(his tail will be the head)
-            velocityY = -1; // cuz 1 moves downward for some weird reason
+           if (e.getKeyCode()==KeyEvent.VK_UP && velocityY != 1){ 
+            // to make sure its not going backwards cuz if it did
+            velocityX = 0;                                        
+            // it will be going back to his tail(his tail will be the head)
+            velocityY = -1; 
+            // cuz 1 moves downward for some weird reason
            }else if (e.getKeyCode()== KeyEvent.VK_DOWN && velocityY != -1){
             velocityX = 0;
             velocityY = 1;
@@ -157,6 +177,17 @@ import javax.swing.*;
            
 
         }
+
+        /* a method to draw a grid 
+        
+        //Drawing grid to make it visible enough to show the tile size
+             for (int i = 0; i < boardWidth / tileSize; i++) { 
+                 g.drawLine(i * tileSize, 0, i * tileSize, boardheight);
+                  // Vertical lines
+                 g.drawLine(0, i * tileSize, boardWidth, i * tileSize); 
+                 // Horizontal lines
+                }
+            */
 
         // we dont need the rest of these override methods
         @Override
